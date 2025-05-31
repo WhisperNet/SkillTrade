@@ -75,5 +75,3 @@ pids
 # Cache directories
 .cache/
 .parcel-cache/
-
-shared
