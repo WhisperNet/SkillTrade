@@ -1,0 +1,43 @@
+# Build outputs
+.next/
+out/
+build/
+dist/
+coverage/
+
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Cache
+.cache/
+.parcel-cache/
+.npm
+.eslintcache
+
+# Generated files
+*.generated.*
+*.min.js
+*.min.css
+*.bundle.js
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env*
+!.env.example
+
+# Documentation
+CHANGELOG.md
+LICENSE
+*.md
+
+# Misc
+.DS_Store
+.git/
+.vercel
+.turbo 

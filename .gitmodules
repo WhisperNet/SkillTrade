@@ -1,0 +1,3 @@
+[submodule "shared"]
+	path = shared
+	url = https://github.com/WhisperNet/shared-library-CSE-350-.git
