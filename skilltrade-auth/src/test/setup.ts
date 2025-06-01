@@ -14,7 +14,7 @@ const userData = {
   fullName: "test",
   description: "test",
   occupation: "professional",
-  availability: "monday",
+  availability: ["monday", "wednesday", "friday"],
   gender: "male",
 }
 global.signin = async (id?: string) => {

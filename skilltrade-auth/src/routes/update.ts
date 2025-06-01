@@ -7,8 +7,19 @@ import {
   requireAuth,
   setCurrentUser,
 } from "@cse-350/shared-library"
-import { Availability, Occupation } from "../types/auth"
+import { Occupation } from "../types/auth"
 import JWT from "jsonwebtoken"
+
+const validDays = [
+  "saturday",
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+] as const
+
 const router = express.Router()
 
 router.post(
@@ -29,21 +40,20 @@ router.post(
       })
       .withMessage("Please provide a valid occupation"),
     body("availability")
-      .trim()
+      .isArray()
+      .withMessage("Availability must be an array")
       .notEmpty()
-      .withMessage("Availability is required")
-      .custom(value => {
-        if (!Object.values(Availability).includes(value)) {
-          throw new Error("Invalid availability value")
-        }
-        return true
+      .withMessage("At least one day must be selected")
+      .custom((value: string[]) => {
+        if (!Array.isArray(value)) return false
+        return value.every(day => validDays.includes(day as (typeof validDays)[number]))
       })
-      .withMessage("Please provide a valid availability"),
+      .withMessage("Please provide valid availability days"),
   ],
   requireAuth,
   requestValidationHandler,
   async (req: Request, res: Response) => {
-    const { fullName, description, occupation, availability } = req.body
+    const { fullName, description, occupation, availability, password } = req.body
     const user = await User.findById(req.currentUser?.id)
     if (!user) {
       throw new NotFoundError()
@@ -52,6 +62,9 @@ router.post(
     user.description = description
     user.occupation = occupation
     user.availability = availability
+    if (password) {
+      user.password = password
+    }
     await user.save()
     const jsonToken = JWT.sign(
       {

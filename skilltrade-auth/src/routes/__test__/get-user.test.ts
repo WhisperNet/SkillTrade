@@ -15,7 +15,7 @@ const startUp = async () => {
     fullName: "test",
     description: "test",
     occupation: "professional",
-    availability: "monday",
+    availability: ["monday", "wednesday", "friday"],
     gender: "male",
     sessionsTaught: 10,
     isPremium: true,
@@ -87,15 +87,17 @@ it("should return user details (Featured User)", async () => {
 })
 
 it("should return user details (Not Featured User)", async () => {
-  const { body } = await request(app).post("/api/users/signup").send({
-    email: "test@test.com",
-    password: "test",
-    fullName: "test",
-    description: "test",
-    occupation: "professional",
-    availability: "monday",
-    gender: "male",
-  })
+  const { body } = await request(app)
+    .post("/api/users/signup")
+    .send({
+      email: "test@test.com",
+      password: "test",
+      fullName: "test",
+      description: "test",
+      occupation: "professional",
+      availability: ["monday", "wednesday"],
+      gender: "male",
+    })
 
   const response = await request(app).get(`/api/users/${body.currentUser.id}`)
 

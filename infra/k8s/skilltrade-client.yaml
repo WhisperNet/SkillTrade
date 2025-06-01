@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skilltrade-client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skilltrade-client
+  template:
+    metadata:
+      labels:
+        app: skilltrade-client
+    spec:
+      containers:
+        - name: skilltrade-client
+          image: whispernet/skilltrade-client
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skilltrade-client-srv
+spec:
+  selector:
+    app: skilltrade-client
+  ports:
+    - name: cleint
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

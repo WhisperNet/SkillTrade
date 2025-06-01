@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: skilltrade.dev
+      http:
+        paths:
+          - path: /api/users/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: skilltrade-auth-srv
+                port:
+                  number: 3000
+          - path: /(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: skilltrade-client-srv
+                port:
+                  number: 3000

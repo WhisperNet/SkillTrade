@@ -8,7 +8,9 @@ interface UserAttrs {
   fullName: string
   description: string
   occupation: "professional" | "student" | "freelancer" | "entrepreneur" | "other"
-  availability: "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
+  availability: Array<
+    "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
+  >
   gender: "male" | "female" | "other"
   sessionsTaught?: number
   isPremium?: boolean
@@ -22,7 +24,9 @@ interface UserDoc extends mongoose.Document {
   fullName: string
   description: string
   occupation: "professional" | "student" | "freelancer" | "entrepreneur" | "other"
-  availability: "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
+  availability: Array<
+    "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
+  >
   gender: "male" | "female" | "other"
   sessionsTaught?: number
   isPremium?: boolean
@@ -62,7 +66,7 @@ const userSchema = new mongoose.Schema(
       require: true,
     },
     availability: {
-      type: String,
+      type: [String],
       enum: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
       require: true,
     },

@@ -19,8 +19,6 @@ export enum Availability {
 export enum Gender {
   MALE = "male",
   FEMALE = "female",
-  OTHER = "other",
-  PREFER_NOT_TO_SAY = "prefer_not_to_say",
 }
 
 // Type guard functions to check if a value is valid for each enum

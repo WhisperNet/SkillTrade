@@ -3,7 +3,7 @@ import JWT from "jsonwebtoken"
 import { User } from "../models/User"
 import { body } from "express-validator"
 import { BadRequestError, requestValidationHandler } from "@cse-350/shared-library"
-import { Occupation, Availability, Gender } from "../types/auth"
+import { Occupation, Gender } from "../types/auth"
 const router = express.Router()
 
 router.post(
@@ -28,16 +28,24 @@ router.post(
       })
       .withMessage("Please provide a valid occupation"),
     body("availability")
-      .trim()
+      .isArray()
+      .withMessage("Availability must be an array")
       .notEmpty()
-      .withMessage("Availability is required")
-      .custom(value => {
-        if (!Object.values(Availability).includes(value)) {
-          throw new Error("Invalid availability value")
-        }
-        return true
+      .withMessage("At least one day must be selected")
+      .custom((value: string[]) => {
+        if (!Array.isArray(value)) return false
+        const validDays = [
+          "saturday",
+          "sunday",
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+        ]
+        return value.every(day => validDays.includes(day))
       })
-      .withMessage("Please provide a valid availability"),
+      .withMessage("Please provide valid availability days"),
     body("gender")
       .trim()
       .notEmpty()

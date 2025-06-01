@@ -7,7 +7,8 @@ describe("Update User Route", () => {
     fullName: "Updated Name",
     description: "Updated description",
     occupation: "student",
-    availability: "monday",
+    availability: ["monday", "wednesday", "friday"],
+    password: "password",
   }
 
   it("returns a 401 if the user is not authenticated", async () => {
@@ -36,7 +37,19 @@ describe("Update User Route", () => {
       .set("Cookie", reqCookie)
       .send({
         ...validUpdateData,
-        availability: "invalid-day",
+        availability: ["invalid-day"],
+      })
+      .expect(400)
+  })
+
+  it("returns 400 for empty availability array", async () => {
+    const reqCookie = await global.signin()
+    await request(app)
+      .post("/api/users/update")
+      .set("Cookie", reqCookie)
+      .send({
+        ...validUpdateData,
+        availability: [],
       })
       .expect(400)
   })
