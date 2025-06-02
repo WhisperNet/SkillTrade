@@ -86,7 +86,10 @@ router.post(
         fullName: user.fullName,
         isPremium: user.isPremium,
       },
-      process.env.JWT_KEY!
+      process.env.JWT_KEY!,
+      {
+        expiresIn: "24h",
+      }
     )
     req.session = {
       JWT: jsonToekn,
