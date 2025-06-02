@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skilltrade-community-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skilltrade-community
+  template:
+    metadata:
+      labels:
+        app: skilltrade-community
+    spec:
+      containers:
+        - name: skilltrade-community
+          image: whispernet/skilltrade-community
+          env:
+            - name: MONGO_URI
+              value: "mongodb://skilltrade-community-mongodb-srv:27017/skilltrade-community"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skilltrade-community-srv
+spec:
+  selector:
+    app: skilltrade-community
+  ports:
+    - name: skilltrade-community
+      port: 3000
+      targetPort: 3000

@@ -1,6 +1,6 @@
 "use client"
 
-import { LogOut, Moon, Settings, Sun, User } from "lucide-react"
+import { Crown, LogOut, Moon, Sun, User } from "lucide-react"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -88,6 +88,12 @@ const Navbar = () => {
                 <Link href={`/users/${currentUser.id}`}>
                   <User className="h-[1.2rem] w-[1.2rem] mr-2" />
                   Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/premium`}>
+                  <Crown className="h-[1.2rem] w-[1.2rem] mr-2" />
+                  Go Premium
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem variant="destructive" onClick={handleLogout}>

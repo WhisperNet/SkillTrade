@@ -72,7 +72,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center bg-background dark:bg-muted transition-colors">
+    <div className="mt-7 flex items-center justify-center  transition-colors">
       <Card className="w-full max-w-3xl mx-4 shadow-lg p-8 mt-12">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Create an Account</CardTitle>

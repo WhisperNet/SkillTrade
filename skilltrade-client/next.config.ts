@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
     config.watchOptions.poll = 300
     return config
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
 }
 
 export default nextConfig
