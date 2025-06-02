@@ -23,6 +23,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: whispernet/skilltrade-payments
+      context: skilltrade-payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: whispernet/skilltrade-client
       context: skilltrade-client
       docker:

@@ -137,7 +137,7 @@ const SingleUserPage = () => {
   const renderBadges = () => {
     const badges = []
 
-    if (!user?.isPremium) {
+    if (user?.isPremium) {
       badges.push(
         <HoverCard key="premium">
           <HoverCardTrigger>
@@ -156,7 +156,7 @@ const SingleUserPage = () => {
       )
     }
 
-    if (!user?.is5Star) {
+    if (user?.is5Star) {
       badges.push(
         <HoverCard key="rising-star">
           <HoverCardTrigger>
@@ -175,7 +175,7 @@ const SingleUserPage = () => {
       )
     }
 
-    if (!user?.isExperiencedTeacher) {
+    if (user?.isExperiencedTeacher) {
       badges.push(
         <HoverCard key="experienced">
           <HoverCardTrigger>
