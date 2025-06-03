@@ -6,6 +6,8 @@ import {
   NotAuthorizeError,
   NotFoundError,
 } from "@cse-350/shared-library"
+import { PostDeletedPublisher } from "../events/publishers/post-deleted-publisher"
+import { natsWrapper } from "../nats-wrapper"
 
 const router = Router()
 
@@ -22,6 +24,9 @@ router.post(
       throw new NotAuthorizeError()
     }
     await post.deleteOne()
+    await new PostDeletedPublisher(natsWrapper.client).publish({
+      postId: post.id,
+    })
     res.status(200).send({ message: "Post deleted successfully" })
   }
 )

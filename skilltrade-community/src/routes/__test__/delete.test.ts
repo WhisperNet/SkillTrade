@@ -2,6 +2,7 @@ import request from "supertest"
 import { app } from "../../app"
 import mongoose from "mongoose"
 import { Post } from "../../models/Posts"
+import { natsWrapper } from "../../nats-wrapper"
 
 it("deletes a post for the author", async () => {
   const authorId = new mongoose.Types.ObjectId().toHexString()
@@ -26,6 +27,7 @@ it("deletes a post for the author", async () => {
 
   expect(response.status).toEqual(200)
   expect(await Post.find({})).toHaveLength(0)
+  expect(natsWrapper.client.publish).toHaveBeenCalled()
 })
 
 it("does not delete a post for a non-author", async () => {

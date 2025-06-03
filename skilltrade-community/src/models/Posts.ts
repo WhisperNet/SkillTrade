@@ -11,6 +11,7 @@ interface PostAttrs {
     "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
   >
   likes?: string[]
+  connections?: string[]
   toTeach: string[]
   toLearn: string[]
 }
@@ -26,6 +27,7 @@ interface PostDoc extends mongoose.Document {
     "saturday" | "sunday" | "monday" | "tuesday" | "wednesday" | "thursday" | "friday"
   >
   likes?: string[]
+  connections?: string[]
   toTeach: string[]
   toLearn: string[]
   createdAt: Date
@@ -77,6 +79,9 @@ const postSchema = new mongoose.Schema(
     toLearn: {
       type: [String],
       required: true,
+    },
+    connections: {
+      type: [String],
     },
   },
   {

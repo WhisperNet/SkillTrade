@@ -67,7 +67,7 @@ router.post(
     if (gender === "male")
       profilePicture = `https://avatar.iran.liara.run/public/${Math.floor(Math.random() * 44) + 1}`
     else
-      profilePicture = `https://avatar.iran.liara.run/public/${Math.floor(Math.random() * 44) + 61}`
+      profilePicture = `https://avatar.iran.liara.run/public/${Math.floor(Math.random() * 44) + 55}`
     const user = await User.build({
       email,
       password,

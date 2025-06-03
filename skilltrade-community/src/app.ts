@@ -8,7 +8,7 @@ import { likePostRouter } from "./routes/like"
 import { deletePostRouter } from "./routes/delete"
 import { updatePostRouter } from "./routes/update"
 import { searchPostRouter } from "./routes/search"
-
+import { connectionRouter } from "./routes/connection"
 const app = express()
 app.set("trust proxy", true)
 app.use(express.json())
@@ -26,6 +26,7 @@ app.use(likePostRouter)
 app.use(deletePostRouter)
 app.use(updatePostRouter)
 app.use(searchPostRouter)
+app.use(connectionRouter)
 app.all("*splat", (req, res) => {
   throw new NotFoundError()
 })
