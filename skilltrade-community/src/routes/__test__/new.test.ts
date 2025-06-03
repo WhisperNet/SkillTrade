@@ -17,7 +17,7 @@ it("creates a post with valid inputs", async () => {
     .send({
       title: "Test Post",
       content: "Test Content",
-      toTeach: ["Test Skill"],
+      toTeach: ["Test SkiLl"],
       toLearn: ["Test Skill"],
       availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     })
@@ -25,8 +25,8 @@ it("creates a post with valid inputs", async () => {
   expect(response.status).toEqual(201)
   expect(response.body.title).toEqual("Test Post")
   expect(response.body.content).toEqual("Test Content")
-  expect(response.body.toTeach).toEqual(["Test Skill"])
-  expect(response.body.toLearn).toEqual(["Test Skill"])
+  expect(response.body.toTeach).toEqual(["test skill"])
+  expect(response.body.toLearn).toEqual(["test skill"])
   expect(response.body.availability).toEqual([
     "saturday",
     "sunday",
@@ -48,8 +48,8 @@ it("clears up old posts", async () => {
   const tobeDeleted = await Post.create({
     title: "Test Post",
     content: "Test Content",
-    toTeach: ["Test Skill"],
-    toLearn: ["Test Skill"],
+    toTeach: ["test skill"],
+    toLearn: ["test skill"],
     availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     authorId: new mongoose.Types.ObjectId().toHexString(),
     authorName: "test",
@@ -62,8 +62,8 @@ it("clears up old posts", async () => {
   const tobeDeleted2 = await Post.create({
     title: "Test Post",
     content: "Test Content",
-    toTeach: ["Test Skill"],
-    toLearn: ["Test Skill"],
+    toTeach: ["test skill"],
+    toLearn: ["test skill"],
     availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     authorId: new mongoose.Types.ObjectId().toHexString(),
     authorName: "test",

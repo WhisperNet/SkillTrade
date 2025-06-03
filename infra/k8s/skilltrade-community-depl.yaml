@@ -16,6 +16,14 @@ spec:
         - name: skilltrade-community
           image: whispernet/skilltrade-community
           env:
+            - name: NATS_CLUSTER_ID
+              value: skilltrade
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
             - name: MONGO_URI
               value: "mongodb://skilltrade-community-mongodb-srv:27017/skilltrade-community"
             - name: JWT_KEY

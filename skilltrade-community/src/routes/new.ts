@@ -40,6 +40,9 @@ router.post(
   requestValidationHandler,
   async (req: Request, res: Response) => {
     const { title, content, toTeach, toLearn, availability } = req.body
+    // make all the entry of the toLearn and toTeach array lowercase
+    const lowerCaseToLearn = toLearn.map((item: string) => item.toLowerCase())
+    const lowerCaseToTeach = toTeach.map((item: string) => item.toLowerCase())
 
     // Clean up old posts before creating new one
     await cleanupOldPosts()
@@ -47,8 +50,8 @@ router.post(
     const post = await Post.build({
       title,
       content,
-      toTeach,
-      toLearn,
+      toTeach: lowerCaseToTeach,
+      toLearn: lowerCaseToLearn,
       authorId: req.currentUser!.id,
       authorName: req.currentUser!.fullName,
       authorProfilePicture: req.currentUser!.profilePicture,

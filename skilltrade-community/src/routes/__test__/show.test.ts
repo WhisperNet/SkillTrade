@@ -19,8 +19,8 @@ it("returns the post if it exists", async () => {
   expect(response.status).toEqual(200)
   expect(response.body.title).toEqual("Test Post")
   expect(response.body.content).toEqual("Test Content")
-  expect(response.body.toTeach).toEqual(["Test Skill"])
-  expect(response.body.toLearn).toEqual(["Test Skill"])
+  expect(response.body.toTeach).toEqual(["test skill"])
+  expect(response.body.toLearn).toEqual(["test skill"])
   expect(response.body.availability).toEqual([
     "saturday",
     "sunday",

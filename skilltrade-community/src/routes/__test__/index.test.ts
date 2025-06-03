@@ -7,8 +7,8 @@ it("returns all posts", async () => {
   const createdPost = await Post.create({
     title: "Test Post",
     content: "Test Content",
-    toTeach: ["Test Skill"],
-    toLearn: ["Test Skill"],
+    toTeach: ["test skill"],
+    toLearn: ["test skill"],
     availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     authorId: new mongoose.Types.ObjectId().toHexString(),
     authorName: "test",
@@ -24,8 +24,8 @@ it("returns all posts", async () => {
   expect(response.body).toHaveLength(1)
   expect(response.body[0].title).toEqual("Test Post")
   expect(response.body[0].content).toEqual("Test Content")
-  expect(response.body[0].toTeach).toEqual(["Test Skill"])
-  expect(response.body[0].toLearn).toEqual(["Test Skill"])
+  expect(response.body[0].toTeach).toEqual(["test skill"])
+  expect(response.body[0].toLearn).toEqual(["test skill"])
   expect(response.body[0].availability).toEqual([
     "saturday",
     "sunday",

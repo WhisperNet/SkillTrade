@@ -10,8 +10,8 @@ it("likes and dislikes a post", async () => {
     .send({
       title: "Test Post",
       content: "Test Content",
-      toTeach: ["Test Skill"],
-      toLearn: ["Test Skill"],
+      toTeach: ["test skill"],
+      toLearn: ["test skill"],
       availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     })
   const likerCookie = await global.signin()
@@ -40,8 +40,8 @@ it("doen't let an author to like his post", async () => {
     .send({
       title: "Test Post",
       content: "Test Content",
-      toTeach: ["Test Skill"],
-      toLearn: ["Test Skill"],
+      toTeach: ["test skill"],
+      toLearn: ["test skill"],
       availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     })
   const response = await request(app)

@@ -19,8 +19,18 @@ router.post(
   [
     body("title").notEmpty().withMessage("Title is required"),
     body("content").notEmpty().withMessage("Content is required"),
-    body("toTeach").isArray().notEmpty().withMessage("To teach is required"),
-    body("toLearn").isArray().notEmpty().withMessage("To learn is required"),
+    body("toTeach")
+      .isArray()
+      .notEmpty()
+      .withMessage("To teach is required")
+      .custom(array => array.every((item: any) => typeof item === "string"))
+      .withMessage("All skills in toTeach must be strings"),
+    body("toLearn")
+      .isArray()
+      .notEmpty()
+      .withMessage("To learn is required")
+      .custom(array => array.every((item: any) => typeof item === "string"))
+      .withMessage("All skills in toLearn must be strings"),
     body("availability").isArray().notEmpty().withMessage("Availability is required"),
   ],
   requestValidationHandler,
@@ -37,11 +47,13 @@ router.post(
     if (!req.currentUser.isPremium) {
       throw new BadRequestError("Only premium users can update posts")
     }
+    const lowerCaseToTeach = toTeach.map((item: string) => item.toLowerCase())
+    const lowerCaseToLearn = toLearn.map((item: string) => item.toLowerCase())
     post.set({
       title,
       content,
-      toTeach,
-      toLearn,
+      toTeach: lowerCaseToTeach,
+      toLearn: lowerCaseToLearn,
       availability,
     })
     await post.save()

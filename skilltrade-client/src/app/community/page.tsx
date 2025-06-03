@@ -36,29 +36,61 @@ export default function Community() {
   const [searchLearn, setSearchLearn] = useState("")
   const [searchTeach, setSearchTeach] = useState("")
   const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const router = useRouter()
 
   // Fetch posts
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const client = buildClient({ req: {} })
-        const response = await client.get("/api/community/posts")
-        setPosts(response.data)
-      } catch (error) {
-        console.error("Error fetching posts:", error)
-      } finally {
-        setLoading(false)
-      }
+  const fetchPosts = async () => {
+    try {
+      const client = buildClient({ req: {} })
+      const response = await client.get("/api/community/posts")
+      // Sort posts by number of likes (most liked first)
+      const sortedPosts = response.data.sort((a: Post, b: Post) => {
+        const likesA = a.likes?.length || 0
+        const likesB = b.likes?.length || 0
+        return likesB - likesA
+      })
+      setPosts(sortedPosts)
+    } catch (error) {
+      console.error("Error fetching posts:", error)
+    } finally {
+      setLoading(false)
     }
+  }
 
+  useEffect(() => {
     fetchPosts()
   }, [])
 
-  // Mock search handler (as requested)
-  const handleSearch = () => {
-    console.log("Search terms - Learn:", searchLearn, "Teach:", searchTeach)
-    // TODO: Implement search functionality when backend is ready
+  // Search handler
+  const handleSearch = async () => {
+    setIsSearching(true)
+    try {
+      const client = buildClient({ req: {} })
+      const searchData = {
+        toLearn: searchLearn ? searchLearn.split(",").map(skill => skill.trim()) : [],
+        toTeach: searchTeach ? searchTeach.split(",").map(skill => skill.trim()) : [],
+      }
+
+      const response = await client.post("/api/community/search", searchData)
+      // Sort search results by likes
+      const sortedPosts = response.data.sort((a: Post, b: Post) => {
+        const likesA = a.likes?.length || 0
+        const likesB = b.likes?.length || 0
+        return likesB - likesA
+      })
+      setPosts(sortedPosts)
+    } catch (error) {
+      console.error("Error searching posts:", error)
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  const handleReset = () => {
+    setSearchLearn("")
+    setSearchTeach("")
+    fetchPosts()
   }
 
   const handlePostClick = (postId: string) => {
@@ -131,9 +163,21 @@ export default function Community() {
               />
             </div>
           </div>
-          <Button onClick={handleSearch} className="w-full sm:w-auto">
-            Search Posts
-          </Button>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={handleReset} disabled={isSearching}>
+              Reset
+            </Button>
+            <Button onClick={handleSearch} className="w-full sm:w-auto" disabled={isSearching}>
+              {isSearching ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Searching...
+                </div>
+              ) : (
+                "Search Posts"
+              )}
+            </Button>
+          </div>
         </CardContent>
       </Card>
 
@@ -167,7 +211,7 @@ export default function Community() {
                     variant="secondary"
                     className="bg-orange-100 text-orange-800 border-orange-300"
                   >
-                    Premium
+                    Pro Member
                   </Badge>
                 )}
               </div>

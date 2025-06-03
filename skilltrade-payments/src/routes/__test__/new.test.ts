@@ -5,19 +5,6 @@ import { stripe } from "../../stripe"
 import { Payment } from "../../models/payment"
 import { natsWrapper } from "../../nats-wrapper"
 
-// const startUp = async () => {
-//   const orderId = new mongoose.Types.ObjectId().toHexString()
-//   const userId = new mongoose.Types.ObjectId().toHexString()
-//   const order = await Order.build({
-//     id: orderId,
-//     version: 0,
-//     price: Math.floor(Math.random() * 1000) + 1,
-//     userId,
-//     status: OrderStatus.Created,
-//   })
-//   return { orderId, userId, order }
-// }
-
 it("returns 401 for unauthenticated access", async () => {
   const userId = new mongoose.Types.ObjectId().toHexString()
   const payment = await Payment.build({

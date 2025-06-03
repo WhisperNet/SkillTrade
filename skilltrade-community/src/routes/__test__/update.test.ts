@@ -8,8 +8,8 @@ it("updates a post for the premium author", async () => {
   const createdPost = await Post.create({
     title: "Test Post",
     content: "Test Content",
-    toTeach: ["Test Skill"],
-    toLearn: ["Test Skill"],
+    toTeach: ["test skill"],
+    toLearn: ["test skill"],
     availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     authorId: authorId,
     authorName: "test",
@@ -33,8 +33,8 @@ it("updates a post for the premium author", async () => {
   const foundPost = await Post.findById(createdPost.id)
   expect(foundPost!.title).toEqual("Test Post 2")
   expect(foundPost!.content).toEqual("Test Content 2")
-  expect(foundPost!.toTeach).toEqual(["Test Skill 2"])
-  expect(foundPost!.toLearn).toEqual(["Test Skill 2"])
+  expect(foundPost!.toTeach).toEqual(["test skill 2"])
+  expect(foundPost!.toLearn).toEqual(["test skill 2"])
   expect(foundPost!.availability).toEqual(["sunday", "monday", "tuesday", "wednesday", "thursday"])
 })
 
@@ -43,8 +43,8 @@ it("does not update a post for a non-premium author", async () => {
   const createdPost = await Post.create({
     title: "Test Post",
     content: "Test Content",
-    toTeach: ["Test Skill"],
-    toLearn: ["Test Skill"],
+    toTeach: ["test skill"],
+    toLearn: ["test skill"],
     availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     authorId: authorId,
     authorName: "test",
@@ -68,8 +68,8 @@ it("does not update a post for a non-premium author", async () => {
   const foundPost = await Post.findById(createdPost.id)
   expect(foundPost!.title).toEqual("Test Post")
   expect(foundPost!.content).toEqual("Test Content")
-  expect(foundPost!.toTeach).toEqual(["Test Skill"])
-  expect(foundPost!.toLearn).toEqual(["Test Skill"])
+  expect(foundPost!.toTeach).toEqual(["test skill"])
+  expect(foundPost!.toLearn).toEqual(["test skill"])
   expect(foundPost!.availability).toEqual([
     "saturday",
     "sunday",
@@ -86,8 +86,8 @@ it("does not update a post for a unautorized author", async () => {
   const createdPost = await Post.create({
     title: "Test Post",
     content: "Test Content",
-    toTeach: ["Test Skill"],
-    toLearn: ["Test Skill"],
+    toTeach: ["test skill"],
+    toLearn: ["test skill"],
     availability: ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"],
     authorId: authorId,
     authorName: "test",
@@ -111,8 +111,8 @@ it("does not update a post for a unautorized author", async () => {
   const foundPost = await Post.findById(createdPost.id)
   expect(foundPost!.title).toEqual("Test Post")
   expect(foundPost!.content).toEqual("Test Content")
-  expect(foundPost!.toTeach).toEqual(["Test Skill"])
-  expect(foundPost!.toLearn).toEqual(["Test Skill"])
+  expect(foundPost!.toTeach).toEqual(["test skill"])
+  expect(foundPost!.toLearn).toEqual(["test skill"])
   expect(foundPost!.availability).toEqual([
     "saturday",
     "sunday",
