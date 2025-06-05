@@ -49,6 +49,7 @@ interface Post {
   availability: string[]
   likes?: string[]
   connections?: string[]
+  connectionAccepted?: string[]
   toTeach: string[]
   toLearn: string[]
   createdAt: string
@@ -201,8 +202,9 @@ export default function CommunityPage() {
   }
 
   const isAuthor = currentUser?.id === post.authorId
-  const isLiked = currentUser && post.likes?.includes(currentUser.id)
-  const isConnected = currentUser && post.connections?.includes(currentUser.id)
+  const isLiked = !!(currentUser && post.likes?.includes(currentUser.id))
+  const isConnected = !!(currentUser && post.connections?.includes(currentUser.id))
+  const isConnectionAccepted = !!(currentUser && post.connectionAccepted?.includes(currentUser.id))
   const likeCount = post.likes?.length || 0
   const connectionCount = post.connections?.length || 0
   const canEdit = isAuthor && currentUser?.isPremium && connectionCount === 0
@@ -261,18 +263,28 @@ export default function CommunityPage() {
                 {/* Connection Button */}
                 {currentUser && !isAuthor && (
                   <Button
-                    variant={isConnected ? "default" : "outline"}
+                    variant={isConnectionAccepted ? "default" : isConnected ? "outline" : "outline"}
                     size="sm"
                     onClick={handleConnection}
-                    disabled={isConnecting}
+                    disabled={isConnecting || isConnectionAccepted}
                     className={`flex items-center space-x-1 ${
-                      isConnected
-                        ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      isConnectionAccepted
+                        ? "bg-green-500 hover:bg-green-500 text-white opacity-75 cursor-not-allowed"
+                        : isConnected
+                        ? "border-orange-500 text-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950"
                         : "border-blue-500 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950"
                     }`}
                   >
                     <Users className="h-4 w-4" />
-                    <span>{isConnecting ? "..." : isConnected ? "Connected" : "Connect"}</span>
+                    <span>
+                      {isConnecting
+                        ? "..."
+                        : isConnectionAccepted
+                        ? "Connected"
+                        : isConnected
+                        ? "Requested"
+                        : "Connect"}
+                    </span>
                   </Button>
                 )}
 

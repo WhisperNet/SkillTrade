@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express"
 import { Post } from "../models/Posts"
 import { natsWrapper } from "../nats-wrapper"
 import { ConnectionRequestedPublisher } from "../events/publishers/connection-requested-publisher"
-import { ConnectionRejectedPublisher } from "../events/publishers/connection-rejected-publisher"
+import { ConnectionCancelledPublisher } from "../events/publishers/connection-cancelled-publisher"
 import { BadRequestError, requireAuth, setCurrentUser } from "@cse-350/shared-library"
 import { NotFoundError } from "@cse-350/shared-library"
 
@@ -18,11 +18,12 @@ router.post(
     if (!foundPost) throw new NotFoundError()
     if (foundPost.authorId === req.currentUser?.id)
       throw new BadRequestError("You cannot request a connection to your own post")
-
+    if (foundPost.connectionAccepted?.includes(req.currentUser?.id))
+      throw new BadRequestError("The request has already been accepted")
     if (foundPost.connections?.includes(req.currentUser?.id)) {
       foundPost.connections = foundPost.connections?.filter(id => id !== req.currentUser?.id)
       await foundPost.save()
-      await new ConnectionRejectedPublisher(natsWrapper.client).publish({
+      await new ConnectionCancelledPublisher(natsWrapper.client).publish({
         postId: foundPost.id,
         postAuthorId: foundPost.authorId,
         requestedUserId: req.currentUser?.id,
@@ -38,6 +39,8 @@ router.post(
         requestedUserId: req.currentUser?.id,
         toLearn: foundPost.toLearn,
         toTeach: foundPost.toTeach,
+        requestedUserName: req.currentUser?.fullName,
+        requestedUserProfilePicture: req.currentUser?.profilePicture,
       })
     }
     res.status(200).json({

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skilltrade-connection-mongodb-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skilltrade-connection-mongodb
+  template:
+    metadata:
+      labels:
+        app: skilltrade-connection-mongodb
+    spec:
+      containers:
+        - name: skilltrade-connection-mongodb
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skilltrade-connection-mongodb-srv
+spec:
+  selector:
+    app: skilltrade-connection-mongodb
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

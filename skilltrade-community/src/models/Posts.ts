@@ -12,6 +12,7 @@ interface PostAttrs {
   >
   likes?: string[]
   connections?: string[]
+  connectionAccepted?: string[]
   toTeach: string[]
   toLearn: string[]
 }
@@ -28,6 +29,7 @@ interface PostDoc extends mongoose.Document {
   >
   likes?: string[]
   connections?: string[]
+  connectionAccepted?: string[]
   toTeach: string[]
   toLearn: string[]
   createdAt: Date
@@ -82,6 +84,10 @@ const postSchema = new mongoose.Schema(
     },
     connections: {
       type: [String],
+    },
+    connectionAccepted: {
+      type: [String],
+      default: [],
     },
   },
   {

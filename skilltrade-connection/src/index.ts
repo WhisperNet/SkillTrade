@@ -1,9 +1,9 @@
 import { app } from "./app"
 import mongoose from "mongoose"
 import { natsWrapper } from "./nats-wrapper"
-import { PaymentCreatedListener } from "./events/listeners/payment-created-listener"
-import { ConnectionRejectedListener } from "./events/listeners/connection-rejected-listener"
-import { ConnectionAcceptedListener } from "./events/listeners/connection-accepted-listener"
+import { ConnectionRequestedListener } from "./events/listeners/connection-requested-listener"
+import { ConnectionCancelledListener } from "./events/listeners/connection-cancelled-listener"
+import { PostDeletedListener } from "./events/listeners/post-deleted-listener"
 const startUp = async () => {
   try {
     if (!process.env.JWT_KEY) throw Error("JWT Environment variable not found")
@@ -23,9 +23,9 @@ const startUp = async () => {
     })
     process.on("SIGINT", () => natsWrapper.client.close())
     process.on("SIGTERM", () => natsWrapper.client.close())
-    await new PaymentCreatedListener(natsWrapper.client).listen()
-    await new ConnectionRejectedListener(natsWrapper.client).listen()
-    await new ConnectionAcceptedListener(natsWrapper.client).listen()
+    await new ConnectionRequestedListener(natsWrapper.client).listen()
+    await new ConnectionCancelledListener(natsWrapper.client).listen()
+    await new PostDeletedListener(natsWrapper.client).listen()
     app.listen(3000, err => {
       console.log("Community Servise is listening on port 3000!")
     })

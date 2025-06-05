@@ -47,8 +47,8 @@ const Navbar = () => {
         <Link href="/community">Community</Link>
         {currentUser && !loading && (
           <>
-            <Link href="/connected">Connected</Link>
-            <Link href="/requests">Requests</Link>
+            <Link href="/session">Connected</Link>
+            <Link href="/connections">Requested</Link>
           </>
         )}
         {!currentUser && !loading && (

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skilltrade-connection-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skilltrade-connection
+  template:
+    metadata:
+      labels:
+        app: skilltrade-connection
+    spec:
+      containers:
+        - name: skilltrade-connection
+          image: whispernet/skilltrade-connection
+          env:
+            - name: NATS_CLUSTER_ID
+              value: skilltrade
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: MONGO_URI
+              value: "mongodb://skilltrade-connection-mongodb-srv:27017/skilltrade-connection"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skilltrade-connection-srv
+spec:
+  selector:
+    app: skilltrade-connection
+  ports:
+    - name: skilltrade-connection
+      port: 3000
+      targetPort: 3000

@@ -31,6 +31,13 @@ spec:
                 name: skilltrade-payments-srv
                 port:
                   number: 3000
+          - path: /api/connections/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: skilltrade-connection-srv
+                port:
+                  number: 3000
           - path: /(.*)
             pathType: ImplementationSpecific
             backend:
