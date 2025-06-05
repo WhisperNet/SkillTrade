@@ -2,6 +2,7 @@ import { app } from "./app"
 import mongoose from "mongoose"
 import { natsWrapper } from "./nats-wrapper"
 import { PaymentCreatedListener } from "./events/listeners/payment-created-listener"
+import { ReviewCreatedListener } from "./events/listeners/review-created-listemer"
 const startUp = async () => {
   try {
     if (!process.env.JWT_KEY) throw Error("JWT Environment variable not found")
@@ -22,6 +23,7 @@ const startUp = async () => {
     process.on("SIGINT", () => natsWrapper.client.close())
     process.on("SIGTERM", () => natsWrapper.client.close())
     new PaymentCreatedListener(natsWrapper.client).listen()
+    new ReviewCreatedListener(natsWrapper.client).listen()
     app.listen(3000, err => {
       console.log("Auth Servise is listening on port 3000!")
     })

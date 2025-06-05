@@ -46,6 +46,8 @@ interface Review {
     fullName: string
     profilePicture: string
   }
+  reviewAuthorName: string
+  reviewAuthorProfilePicture: string
   createdAt: string
 }
 
@@ -87,17 +89,21 @@ const SingleUserPage = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(`/api/users/${userId}/reviews`)
-        // Mock populate reviewBy data since the API doesn't return it
-        const mockReviews = response.data.map((review: any, index: number) => ({
-          ...review,
-          id: review._id || `review-${index}`,
+        // Use actual review author data from the backend
+        const formattedReviews = response.data.map((review: any) => ({
+          id: review._id || review.id,
+          review: review.review,
+          rating: review.rating,
+          createdAt: review.createdAt,
           reviewBy: {
-            id: `user-${index}`,
-            fullName: `User ${index + 1}`,
-            profilePicture: `https://api.dicebear.com/7.x/avataaars/svg?seed=${index}`,
+            id: review.reviewBy,
+            fullName: review.reviewAuthorName,
+            profilePicture: review.reviewAuthorProfilePicture,
           },
+          reviewAuthorName: review.reviewAuthorName,
+          reviewAuthorProfilePicture: review.reviewAuthorProfilePicture,
         }))
-        setReviews(mockReviews)
+        setReviews(formattedReviews)
       } catch (error) {
         console.error("Error fetching reviews:", error)
       } finally {

@@ -5,6 +5,8 @@ interface UserReviewAttrs {
   rating: number
   reviewBy: string
   reviewFor: string
+  reviewAuthorName: string
+  reviewAuthorProfilePicture: string
 }
 
 interface UserReviewDoc extends mongoose.Document {
@@ -12,6 +14,8 @@ interface UserReviewDoc extends mongoose.Document {
   rating: number
   reviewBy: string
   reviewFor: string
+  reviewAuthorName: string
+  reviewAuthorProfilePicture: string
 }
 
 interface UserReviewModel extends mongoose.Model<UserReviewDoc> {
@@ -37,6 +41,14 @@ const reviewSchema = new mongoose.Schema({
   reviewFor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
+  },
+  reviewAuthorName: {
+    type: String,
+    required: true,
+  },
+  reviewAuthorProfilePicture: {
+    type: String,
     required: true,
   },
 })

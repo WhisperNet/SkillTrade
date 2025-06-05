@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeftRight, TrendingUp, Calendar as CalendarIcon, Clock } from "lucide-react"
+import {
+  ArrowLeftRight,
+  TrendingUp,
+  Calendar as CalendarIcon,
+  Clock,
+  Star,
+  MessageSquare,
+  Play,
+  MessageCircle,
+  BookOpen,
+} from "lucide-react"
 import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -33,6 +43,7 @@ import {
 } from "@/components/ui/dialog"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import buildClient from "../../../../api/client"
 
 interface Session {
@@ -49,6 +60,8 @@ interface Session {
   nextSessionBeginsAt?: string
   toTeach: string[]
   toLearn: string[]
+  isReviewedByTakerOne?: boolean
+  isReviewedByTakerTwo?: boolean
 }
 
 interface CurrentUser {
@@ -71,6 +84,12 @@ export default function SessionPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string>("22:00")
   const [isEndingSession, setIsEndingSession] = useState(false)
+  const [reviewRating, setReviewRating] = useState<number>(0)
+  const [reviewComment, setReviewComment] = useState<string>("")
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+  const [reviewError, setReviewError] = useState("")
+  const [reviewSuccess, setReviewSuccess] = useState(false)
+  const [isEndSessionDialogOpen, setIsEndSessionDialogOpen] = useState(false)
 
   // Chart configuration
   const chartConfig = {
@@ -181,6 +200,7 @@ export default function SessionPage() {
   const handleEndSession = async () => {
     try {
       setIsEndingSession(true)
+      setIsEndSessionDialogOpen(false)
       const client = buildClient({ req: undefined })
       await client.post(`/api/connections/active/${sessionId}/end`)
       setSession(prev => (prev ? { ...prev, isEnded: true } : prev))
@@ -188,6 +208,62 @@ export default function SessionPage() {
       setError(err.response?.data?.message || "Failed to end session")
     } finally {
       setIsEndingSession(false)
+    }
+  }
+
+  const handleStartTeaching = () => {
+    // Add your logic for starting teaching
+    console.log("Start teaching clicked")
+    // You can add navigation to a teaching interface or open a video call
+  }
+
+  const handleMessage = () => {
+    // Add your logic for messaging
+    console.log("Message clicked")
+    // You can navigate to a chat interface or open a messaging modal
+  }
+
+  const handleResources = () => {
+    // Add your logic for resources
+    console.log("Resources clicked")
+    // You can navigate to a resources page or open a resources modal
+  }
+
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0) {
+      setReviewError("Please select a rating")
+      return
+    }
+    if (reviewComment.trim() === "") {
+      setReviewError("Please write a review comment")
+      return
+    }
+
+    try {
+      setIsSubmittingReview(true)
+      setReviewError("")
+      const client = buildClient({ req: undefined })
+      await client.post(`/api/connections/active/${sessionId}/review`, {
+        rating: reviewRating,
+        comment: reviewComment,
+      })
+      setReviewSuccess(true)
+      setSession(prev => {
+        if (!prev || !currentUser) return prev
+
+        if (currentUser.id === prev.sessionTakerOneId) {
+          return { ...prev, isReviewedByTakerOne: true }
+        } else if (currentUser.id === prev.sessionTakerTwoId) {
+          return { ...prev, isReviewedByTakerTwo: true }
+        }
+        return prev
+      })
+      setReviewRating(0)
+      setReviewComment("")
+    } catch (err: any) {
+      setReviewError(err.response?.data?.message || "Failed to submit review")
+    } finally {
+      setIsSubmittingReview(false)
     }
   }
 
@@ -212,6 +288,55 @@ export default function SessionPage() {
     } else {
       return { skillsToTeach: [], skillsToLearn: [] }
     }
+  }
+
+  // Check if current user has already reviewed
+  const hasAlreadyReviewed = () => {
+    if (!session || !currentUser) return false
+
+    if (currentUser.id === session.sessionTakerOneId) {
+      return session.isReviewedByTakerOne || false
+    } else if (currentUser.id === session.sessionTakerTwoId) {
+      return session.isReviewedByTakerTwo || false
+    }
+    return false
+  }
+
+  // Get the other participant's name for review context
+  const getOtherParticipantName = () => {
+    if (!session || !currentUser) return ""
+
+    if (currentUser.id === session.sessionTakerOneId) {
+      return session.sessionTakerTwoName
+    } else if (currentUser.id === session.sessionTakerTwoId) {
+      return session.sessionTakerOneName
+    }
+    return ""
+  }
+
+  // Render star rating component
+  const renderStarRating = (
+    rating: number,
+    interactive: boolean = false,
+    onRatingChange?: (rating: number) => void
+  ) => {
+    return (
+      <div className="flex items-center gap-1">
+        {Array.from({ length: 5 }, (_, index) => {
+          const starValue = index + 1
+          return (
+            <Star
+              key={index}
+              size={20}
+              className={`${
+                starValue <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+              } ${interactive ? "cursor-pointer hover:text-yellow-400 transition-colors" : ""}`}
+              onClick={interactive && onRatingChange ? () => onRatingChange(starValue) : undefined}
+            />
+          )
+        })}
+      </div>
+    )
   }
 
   if (loading) {
@@ -326,6 +451,41 @@ export default function SessionPage() {
         </CardContent>
       </Card>
 
+      {/* Session Actions - Second Row */}
+      {!session.isEnded && (
+        <Card className="mb-6">
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Button
+                onClick={handleStartTeaching}
+                className="flex items-center gap-2 h-12"
+                variant="default"
+              >
+                <Play className="h-4 w-4" />
+                Start Teaching
+              </Button>
+              <Button
+                onClick={handleMessage}
+                className="flex items-center gap-2 h-12"
+                variant="outline"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Message
+              </Button>
+              <Button
+                onClick={handleResources}
+                className="flex items-center gap-2 h-12"
+                variant="outline"
+              >
+                <BookOpen className="h-4 w-4" />
+                Resources
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Third Row - Next Session Timer and Session Hours Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Next Session Timer */}
         <Card>
@@ -523,21 +683,118 @@ export default function SessionPage() {
         </Card>
       </div>
 
-      {/* End Session Button */}
+      {/* End Session Button with Confirmation Dialog */}
       <div className="mt-6 text-center">
-        <Button
-          variant="destructive"
-          disabled={session.isEnded || isEndingSession}
-          onClick={handleEndSession}
-          className="w-full max-w-sm"
-        >
-          {isEndingSession
-            ? "Ending Session..."
-            : session.isEnded
-            ? "Session Ended"
-            : "End Session"}
-        </Button>
+        <Dialog open={isEndSessionDialogOpen} onOpenChange={setIsEndSessionDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="destructive" disabled={session.isEnded} className="w-full max-w-sm">
+              {session.isEnded ? "Session Ended" : "End Session"}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>End Session</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to end this skill trading session? This action cannot be
+                undone. Both participants will be notified that the session has ended.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex gap-2">
+              <Button variant="outline" onClick={() => setIsEndSessionDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleEndSession} disabled={isEndingSession}>
+                {isEndingSession ? "Ending..." : "End Session"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
+
+      {/* Review Section - Only show when session is ended */}
+      {session.isEnded && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" />
+              Rate Your Experience
+            </CardTitle>
+            <CardDescription>
+              Share your experience with {getOtherParticipantName()}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {hasAlreadyReviewed() ? (
+              <div className="text-center py-8">
+                <div className="flex justify-center mb-4">
+                  <Badge variant="secondary" className="text-sm">
+                    Review Submitted
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
+                  You have already reviewed this session. Thank you for your feedback!
+                </p>
+              </div>
+            ) : reviewSuccess ? (
+              <div className="text-center py-8">
+                <div className="flex justify-center mb-4">
+                  <Badge variant="default" className="text-sm">
+                    Review Submitted Successfully
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">
+                  Thank you for your feedback! Your review has been submitted.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Star Rating */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Rate your experience</label>
+                  <div className="flex items-center gap-2">
+                    {renderStarRating(reviewRating, true, setReviewRating)}
+                    {reviewRating > 0 && (
+                      <span className="text-sm text-muted-foreground ml-2">
+                        {reviewRating} star{reviewRating !== 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Review Comment */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Write your review</label>
+                  <Textarea
+                    placeholder={`Share your experience learning with ${getOtherParticipantName()}...`}
+                    value={reviewComment}
+                    onChange={e => setReviewComment(e.target.value)}
+                    className="min-h-[100px]"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex flex-col gap-2">
+                  <Button
+                    onClick={handleSubmitReview}
+                    disabled={
+                      isSubmittingReview || reviewRating === 0 || reviewComment.trim() === ""
+                    }
+                    className="w-full"
+                  >
+                    {isSubmittingReview ? "Submitting..." : "Submit Review"}
+                  </Button>
+
+                  {reviewError && (
+                    <Alert variant="destructive">
+                      <AlertDescription>{reviewError}</AlertDescription>
+                    </Alert>
+                  )}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {error && (
         <Alert className="mt-4 max-w-md mx-auto" variant="destructive">

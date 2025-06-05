@@ -24,12 +24,13 @@ interface RatingBarChartProps {
 const RatingBarChart = ({ reviews, loading = false }: RatingBarChartProps) => {
   // Calculate rating distribution
   const ratingCounts = {
-    "1 Star": 1,
-    "2 Stars": 5,
-    "3 Stars": 10,
-    "4 Stars": 15,
-    "5 Stars": 20,
+    "1 Star": 0,
+    "2 Stars": 0,
+    "3 Stars": 0,
+    "4 Stars": 0,
+    "5 Stars": 0,
   }
+
   reviews.forEach(review => {
     switch (review.rating) {
       case 1:

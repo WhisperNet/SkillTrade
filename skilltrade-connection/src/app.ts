@@ -8,6 +8,7 @@ import { activeSessionRouterIndex } from "./routes/session"
 import { activeSessionRouterSetDate } from "./routes/session/set-date"
 import { activeSessionRouterShow } from "./routes/session/show"
 import { activeSessionRouterEnd } from "./routes/session/end"
+import { reviewRouter } from "./routes/session/review"
 const app = express()
 app.set("trust proxy", true)
 app.use(express.json())
@@ -24,6 +25,7 @@ app.use(activeSessionRouterIndex)
 app.use(activeSessionRouterSetDate)
 app.use(activeSessionRouterShow)
 app.use(activeSessionRouterEnd)
+app.use(reviewRouter)
 app.all("*splat", (req, res) => {
   throw new NotFoundError()
 })
