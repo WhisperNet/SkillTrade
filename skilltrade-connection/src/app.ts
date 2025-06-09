@@ -9,6 +9,10 @@ import { activeSessionRouterSetDate } from "./routes/session/set-date"
 import { activeSessionRouterShow } from "./routes/session/show"
 import { activeSessionRouterEnd } from "./routes/session/end"
 import { reviewRouter } from "./routes/session/review"
+import { activeSessionRouterToken } from "./routes/session/token"
+import { messagesRouter } from "./routes/session/messages"
+import { whiteboardRouter } from "./routes/session/whiteboard"
+
 const app = express()
 app.set("trust proxy", true)
 app.use(express.json())
@@ -26,6 +30,9 @@ app.use(activeSessionRouterSetDate)
 app.use(activeSessionRouterShow)
 app.use(activeSessionRouterEnd)
 app.use(reviewRouter)
+app.use(activeSessionRouterToken)
+app.use(messagesRouter)
+app.use(whiteboardRouter)
 app.all("*splat", (req, res) => {
   throw new NotFoundError()
 })

@@ -26,6 +26,10 @@ spec:
               value: "http://nats-srv:4222"
             - name: MONGO_URI
               value: "mongodb://skilltrade-connection-mongodb-srv:27017/skilltrade-connection"
+            - name: AGORA_APP_ID
+              value: "361559afa0c349a596d6e1ba7578a0b7"
+            - name: AGORA_APP_CERTIFICATE
+              value: "265b5446708341acbb1cfdf02fff127d"
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:

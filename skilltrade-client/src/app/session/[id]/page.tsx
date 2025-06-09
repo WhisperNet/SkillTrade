@@ -45,6 +45,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import buildClient from "../../../../api/client"
+import VideoCall from "@/components/VideoCall"
+import HttpChat from "@/components/HttpChat"
 
 interface Session {
   id: string
@@ -90,6 +92,12 @@ export default function SessionPage() {
   const [reviewError, setReviewError] = useState("")
   const [reviewSuccess, setReviewSuccess] = useState(false)
   const [isEndSessionDialogOpen, setIsEndSessionDialogOpen] = useState(false)
+  const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
+  const [isHost, setIsHost] = useState(false)
+  const [videoCallToken, setVideoCallToken] = useState("")
+  const [videoCallUid, setVideoCallUid] = useState<number>(0)
+  const [videoCallRole, setVideoCallRole] = useState<"host" | "audience">("audience")
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Chart configuration
   const chartConfig = {
@@ -211,22 +219,30 @@ export default function SessionPage() {
     }
   }
 
-  const handleStartTeaching = () => {
-    // Add your logic for starting teaching
-    console.log("Start teaching clicked")
-    // You can add navigation to a teaching interface or open a video call
+  const handleStartTeaching = async () => {
+    try {
+      // Get token from your backend
+      const client = buildClient({ req: undefined })
+      const response = await client.post(`/api/connections/active/${sessionId}/token`, {
+        role: "host",
+      })
+
+      setVideoCallToken(response.data.token)
+      setVideoCallUid(response.data.uid)
+      setVideoCallRole(response.data.role)
+      setIsHost(true)
+      setIsVideoCallOpen(true)
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to start teaching")
+    }
   }
 
-  const handleMessage = () => {
-    // Add your logic for messaging
-    console.log("Message clicked")
-    // You can navigate to a chat interface or open a messaging modal
+  const handleMessage = async () => {
+    setIsChatOpen(true)
   }
 
-  const handleResources = () => {
-    // Add your logic for resources
-    console.log("Resources clicked")
-    // You can navigate to a resources page or open a resources modal
+  const handleCloseChat = () => {
+    setIsChatOpen(false)
   }
 
   const handleSubmitReview = async () => {
@@ -265,6 +281,31 @@ export default function SessionPage() {
     } finally {
       setIsSubmittingReview(false)
     }
+  }
+
+  const handleJoinClass = async () => {
+    try {
+      // Get token from your backend
+      const client = buildClient({ req: undefined })
+      const response = await client.post(`/api/connections/active/${sessionId}/token`, {
+        role: "audience",
+      })
+
+      setVideoCallToken(response.data.token)
+      setVideoCallUid(response.data.uid)
+      setVideoCallRole(response.data.role)
+      setIsHost(false)
+      setIsVideoCallOpen(true)
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to join class")
+    }
+  }
+
+  const handleLeaveCall = () => {
+    setIsVideoCallOpen(false)
+    setVideoCallToken("")
+    setVideoCallUid(0)
+    setVideoCallRole("audience")
   }
 
   // Determine skills to show based on current user perspective
@@ -337,6 +378,29 @@ export default function SessionPage() {
         })}
       </div>
     )
+  }
+
+  // Get current user and other user names
+  const getCurrentUserName = () => {
+    if (!session || !currentUser) return "You"
+
+    if (currentUser.id === session.sessionTakerOneId) {
+      return session.sessionTakerOneName
+    } else if (currentUser.id === session.sessionTakerTwoId) {
+      return session.sessionTakerTwoName
+    }
+    return "You"
+  }
+
+  const getOtherUserName = () => {
+    if (!session || !currentUser) return "Other User"
+
+    if (currentUser.id === session.sessionTakerOneId) {
+      return session.sessionTakerTwoName
+    } else if (currentUser.id === session.sessionTakerTwoId) {
+      return session.sessionTakerOneName
+    }
+    return "Other User"
   }
 
   if (loading) {
@@ -473,12 +537,12 @@ export default function SessionPage() {
                 Message
               </Button>
               <Button
-                onClick={handleResources}
+                onClick={handleJoinClass}
                 className="flex items-center gap-2 h-12"
                 variant="outline"
               >
                 <BookOpen className="h-4 w-4" />
-                Resources
+                Join Class
               </Button>
             </div>
           </CardContent>
@@ -795,6 +859,39 @@ export default function SessionPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Video Call Dialog */}
+      <Dialog open={isVideoCallOpen} onOpenChange={setIsVideoCallOpen}>
+        <DialogContent className="max-w-6xl h-[85vh] p-0">
+          {videoCallToken && videoCallUid > 0 && (
+            <VideoCall
+              appId={process.env.NEXT_PUBLIC_AGORA_APP_ID!}
+              channelName={sessionId}
+              token={videoCallToken}
+              uid={videoCallUid}
+              role={videoCallRole}
+              onLeave={handleLeaveCall}
+              currentUserName={getCurrentUserName()}
+              otherUserName={getOtherUserName()}
+              sessionId={sessionId}
+              userId={currentUser?.id || ""}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Chat Dialog */}
+      <Dialog open={isChatOpen} onOpenChange={setIsChatOpen}>
+        <DialogContent className="max-w-md h-[70vh] p-0">
+          <HttpChat
+            sessionId={sessionId}
+            userId={currentUser?.id || ""}
+            currentUserName={getCurrentUserName()}
+            otherUserName={getOtherUserName()}
+            onClose={handleCloseChat}
+          />
+        </DialogContent>
+      </Dialog>
 
       {error && (
         <Alert className="mt-4 max-w-md mx-auto" variant="destructive">

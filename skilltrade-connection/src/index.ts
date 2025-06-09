@@ -4,6 +4,7 @@ import { natsWrapper } from "./nats-wrapper"
 import { ConnectionRequestedListener } from "./events/listeners/connection-requested-listener"
 import { ConnectionCancelledListener } from "./events/listeners/connection-cancelled-listener"
 import { PostDeletedListener } from "./events/listeners/post-deleted-listener"
+
 const startUp = async () => {
   try {
     if (!process.env.JWT_KEY) throw Error("JWT Environment variable not found")
@@ -26,8 +27,9 @@ const startUp = async () => {
     await new ConnectionRequestedListener(natsWrapper.client).listen()
     await new ConnectionCancelledListener(natsWrapper.client).listen()
     await new PostDeletedListener(natsWrapper.client).listen()
-    app.listen(3000, err => {
-      console.log("Community Servise is listening on port 3000!")
+
+    app.listen(3000, () => {
+      console.log("Community Service is listening on port 3000!")
     })
   } catch (err) {
     console.log("Something went wrong while starting the app")
