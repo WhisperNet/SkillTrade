@@ -35,10 +35,6 @@ SkillTrade is a comprehensive microservices-based platform that enables users to
 - [🧪 Testing](#-testing)
 - [🔒 Security Features](#-security-features)
 - [📈 Scalability Considerations](#-scalability-considerations)
-- [🔮 Future Enhancements](#-future-enhancements)
-- [📄 License](#-license)
-- [👥 Contributing](#-contributing)
-- [📞 Support](#-support)
 
 ## 🏗️ Project Architecture
 
@@ -485,19 +481,6 @@ Tests include:
 - **Caching Strategy**: Ready for Redis integration for session management
 - **Load Balancing**: NGINX ingress provides load balancing capabilities
 
-## 🔮 Future Enhancements
-
-- **Mobile App Support**: Develop a mobile application for better user experience
-- **AI-powered Recommendations**: Implement AI to suggest relevant learning opportunities
-- **Multi-language Support**: Add support for multiple languages
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
-## 👥 Contributing
-
-Contributions are welcome! Please read the [CONTRIBUTING](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
 
 ## 📞 Support
 
