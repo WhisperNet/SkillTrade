@@ -1,40 +1,42 @@
 # SkillTrade - Peer-to-Peer Skill Exchange Platform
+<img width="1919" height="902" alt="image" src="https://github.com/user-attachments/assets/9c9ed9d3-d4f2-4044-b79c-d546b32f5b13" />
+
 
 SkillTrade is a comprehensive microservices-based platform that enables users to exchange skills and knowledge through structured learning sessions. The platform facilitates peer-to-peer learning where users can both teach their expertise and learn new skills from others in the community.
 
 ## 📋 Table of Contents
 
-- [🏗️ Project Architecture](#️-project-architecture)
+- [ Project Architecture](#️-project-architecture)
   - [Microservices Overview](#microservices-overview)
   - [Infrastructure](#infrastructure)
-- [🚀 Core Features](#-core-features)
+- [ Core Features](#-core-features)
   - [1. User Authentication & Profiles](#1-user-authentication--profiles)
   - [2. Community & Social Features](#2-community--social-features)
   - [3. Connection & Session Management](#3-connection--session-management)
   - [4. Premium Learning Experience](#4-premium-learning-experience)
   - [5. Payment Processing](#5-payment-processing)
   - [6. Review & Rating System](#6-review--rating-system)
-- [🛠️ Technology Stack](#️-technology-stack)
+- [ Technology Stack](#️-technology-stack)
   - [Frontend (skilltrade-client)](#frontend-skilltrade-client)
   - [Backend Services (Node.js/TypeScript)](#backend-services-nodejstypescript)
   - [Shared Library (@cse-350/shared-library)](#shared-library-cse-350shared-library)
   - [Infrastructure & DevOps](#infrastructure--devops)
-- [🔄 Service Communication](#-service-communication)
+- [ Service Communication](#-service-communication)
   - [Event-Driven Architecture](#event-driven-architecture)
   - [API Gateway Pattern](#api-gateway-pattern)
-- [🗄️ Data Models](#️-data-models)
+- [ Data Models](#️-data-models)
   - [User Model (Authentication Service)](#user-model-authentication-service)
   - [Post Model (Community Service)](#post-model-community-service)
   - [Session Model (Connection Service)](#session-model-connection-service)
   - [Payment Model (Payments Service)](#payment-model-payments-service)
-- [🚦 Getting Started](#-getting-started)
-  - [🚀 How to Run Locally](#-how-to-run-locally)
+- [ Getting Started](#-getting-started)
+  - [ How to Run Locally](#-how-to-run-locally)
   - [Prerequisites](#prerequisites)
   - [Local Development Setup](#local-development-setup)
   - [Environment Configuration](#environment-configuration)
-- [🧪 Testing](#-testing)
-- [🔒 Security Features](#-security-features)
-- [📈 Scalability Considerations](#-scalability-considerations)
+- [ Testing](#-testing)
+- [ Security Features](#-security-features)
+- [ Scalability Considerations](#-scalability-considerations)
 
 ## 🏗️ Project Architecture
 
